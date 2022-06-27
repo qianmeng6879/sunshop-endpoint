@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="top.mxzero.mapper.AddressMapper">
+    <select id="findById" resultType="Address">
+        select id, province, city, area, detail, postal_code, name, phone
+        from  address
+        where id = #{id}
+    </select>
+
+    <select id="findByIdAndUserId" resultType="Address">
+        select id, province, city, area, detail, postal_code, name, phone
+        from address
+        where id = #{id} and user_id = #{userId} and deleted = 0
+    </select>
+
+    <select id="findAllByUserId" resultType="Address">
+        select id, province, city, area, detail, postal_code, name, phone
+        from address
+        where user_id = #{userId} and deleted = 0
+    </select>
+
+    <select id="findSplitByUserId" resultType="Address">
+        select id, province, city, area, detail, postal_code, name, phone
+        from address
+        where user_id = #{userId} and deleted = 0
+        limit ${current}, ${size}
+    </select>
+
+    <select id="getCountByUserId" resultType="_long">
+        select count(*) from address where user_id = #{userId} and deleted = 0
+    </select>
+
+    <update id="doRemoveByIdAndUserId">
+        update address set deleted = 1 where id = #{id} and user_id = #{userId} and deleted = 0
+    </update>
+</mapper>

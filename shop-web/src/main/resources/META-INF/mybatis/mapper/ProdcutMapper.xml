@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="top.mxzero.mapper.ProductMapper">
+
+    <resultMap id="productMapper" type="Product">
+        <id property="id" column="id" />
+        <result property="title" column="title" />
+        <result property="introduction" column="introduction" />
+        <result property="toPrice" column="to_price" />
+        <result property="costPrice" column="cost_price" />
+        <result property="hot" column="hot" />
+        <result property="unit" column="unit" />
+        <result property="stock" column="stock" />
+        <result property="mainPicture" column="main_picture" />
+        <result property="subPictures" column="sub_pictures" typeHandler="com.baomidou.mybatisplus.extension.handlers.FastjsonTypeHandler" />
+        <result property="createTime" column="create_time" />
+        <result property="updateTime" column="update_time" />
+        <association property="category" javaType="Category">
+            <id property="id" column="category_id" />
+            <result property="name" column="name" />
+        </association>
+    </resultMap>
+
+    <select id="findById" resultMap="productMapper">
+        select p.id, p.title, p.introduction ,p.to_price, p.cost_price, p.hot, p.unit,
+               p.create_time, p.update_time, p.stock,
+               p.category_id, c.name,
+               p.main_picture,
+               p.sub_pictures
+        from  product p join category c on c.id = p.category_id
+        where p.id = #{id} and deleted = 0
+    </select>
+
+    <select id="findAll" resultMap="productMapper">
+        select p.id, p.title,p.to_price, p.cost_price, p.hot, p.unit,
+               p.create_time, p.update_time, p.stock,
+               p.category_id, c.name,
+               p.main_picture
+        from  product p join category c on c.id = p.category_id
+        where deleted = 0
+    </select>
+
+    <select id="findAllByCategoryId" resultMap="productMapper">
+        select p.id, p.title ,p.to_price, p.cost_price, p.hot, p.unit,
+               p.create_time, p.update_time, p.stock,
+               p.category_id, c.name,
+               p.main_picture
+        from  product p join category c on c.id = p.category_id
+        where category_id = #{categoryId} and deleted = 0
+    </select>
+
+    <select id="findSplit" resultMap="productMapper">
+        select p.id, p.title ,p.to_price, p.cost_price, p.hot, p.unit,
+               p.create_time, p.update_time, p.stock,
+               p.category_id, c.name,
+               p.main_picture
+        from  product p join category c on c.id = p.category_id
+        where deleted = 0
+        limit #{current},#{size}
+    </select>
+
+    <select id="findSplitByCategoryId" resultMap="productMapper">
+        select p.id, p.title ,p.to_price, p.cost_price, p.hot, p.unit,
+               p.create_time, p.update_time, p.stock,
+               p.category_id, c.name,
+               p.main_picture
+        from  product p join category c on c.id = p.category_id
+        where p.category_id = #{categoryId} and p.deleted = 0
+        limit #{current},#{size}
+    </select>
+
+    <select id="getCountByCategoryId" resultType="_long">
+        select count(*) from product where category_id = #{categoryId} and deleted = 0
+    </select>
+
+    <update id="toSub">
+        update product set stock = stock - #{quantity}
+        where id = #{productId} and deleted = 0
+    </update>
+
+    <update id="toPlus">
+        update product set stock = stock + #{quantity}
+        where id = #{productId} and deleted = 0
+    </update>
+
+</mapper>

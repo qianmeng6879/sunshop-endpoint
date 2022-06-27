@@ -1,0 +1,36 @@
+server:
+  servlet:
+    context-path: /api
+
+spring:
+  profiles:
+    active: prod
+  jackson:
+    time-zone: GMT+8
+    default-property-inclusion: non_null
+    date-format: yyyy-MM-dd HH:mm:ss
+
+  mvc:
+    throw-exception-if-no-handler-found: true
+    pathmatch:
+      matching-strategy: ant_path_matcher
+  web:
+    resources:
+      add-mappings: false
+
+  servlet:
+    multipart:
+      max-file-size: 10MB
+
+
+mybatis-plus:
+  type-enums-package: top.mxzero.common.enums
+  mapper-locations: classpath:META-INF/mybatis/mapper/*.xml
+  type-aliases-package: top.mxzero.common.model
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+
+
+
+

@@ -1,0 +1,98 @@
+buildscript {
+    ext{
+        springBootVersion = '2.6.8'
+    }
+    repositories {
+        maven { url 'https://maven.aliyun.com/nexus/content/groups/public/' }
+        maven { url "https://repo.spring.io/snapshot" }
+        maven { url "https://repo.spring.io/milestone" }
+        maven { url "https://repo.spring.io/release" }
+        maven { url 'https://repo.spring.io/plugins-snapshot' }
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}"
+    }
+}
+
+allprojects {
+    group project_group
+    version project_version
+    tasks.withType(JavaCompile) {
+        options.encoding = "UTF-8"
+    }
+    repositories {
+        maven { url 'https://maven.aliyun.com/repository/public/' }
+        mavenLocal()
+        mavenCentral()
+    }
+}
+
+subprojects {
+    apply plugin: 'java'
+    apply plugin: 'org.springframework.boot'
+    apply plugin: 'io.spring.dependency-management'
+    sourceCompatibility = project_jdk
+    targetCompatibility = project_jdk
+
+    bootRun {
+        systemProperties = System.properties
+    }
+
+    dependencies {
+        testImplementation 'org.springframework.boot:spring-boot-starter-test'
+        implementation 'org.springframework.boot:spring-boot-starter-web'
+        implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+        implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+        implementation 'org.springframework.boot:spring-boot-starter'
+        compileOnly 'org.projectlombok:lombok:1.18.22'
+        annotationProcessor('org.projectlombok:lombok:1.18.22')
+        implementation group: 'com.baomidou', name: 'mybatis-plus-boot-starter', version: '3.5.2'
+        implementation group: 'mysql', name: 'mysql-connector-java', version: '8.0.29'
+        implementation group: 'com.alibaba', name: 'druid-spring-boot-starter', version: '1.2.9'
+        implementation group: 'com.alibaba', name: 'fastjson', version: '2.0.7'
+        implementation group: 'org.hibernate.validator', name: 'hibernate-validator', version: '6.2.3.Final'
+
+    }
+}
+
+project("common"){
+    dependencies {
+    }
+}
+
+project('shop-mapper'){
+    dependencies {
+        implementation project(':common')
+    }
+}
+
+project('shop-service'){
+    dependencies {
+        implementation project(':common')
+        implementation project(':shop-mapper')
+    }
+}
+
+project('mxzero-starter-jwt'){
+    dependencies {
+        implementation group: 'io.jsonwebtoken', name: 'jjwt', version: '0.9.1'
+        implementation group: 'commons-codec', name: 'commons-codec', version: '1.15'
+        implementation group: 'javax.xml.bind', name: 'jaxb-api', version: '2.3.1'
+        implementation group: 'com.sun.xml.bind', name: 'jaxb-core', version: '2.3.0'
+        implementation group: 'com.sun.xml.bind', name: 'jaxb-impl', version: '2.3.0'
+    }
+}
+
+project('shop-web'){
+    dependencies {
+        implementation project(':common')
+        implementation project(':shop-service')
+        implementation project(':mxzero-starter-jwt')
+        implementation group: 'io.jsonwebtoken', name: 'jjwt', version: '0.9.1'
+        implementation group: 'io.springfox', name: 'springfox-boot-starter', version: '3.0.0'
+
+    }
+}
+

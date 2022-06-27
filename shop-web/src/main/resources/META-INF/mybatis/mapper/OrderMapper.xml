@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="top.mxzero.mapper.OrderMapper">
+    <resultMap id="orderMapper" type="Order">
+        <id property="id" column="id" />
+        <result property="code" column="code" />
+        <result property="price" column="price" />
+        <result property="quantity" column="quantity" />
+        <result property="state" column="state" typeHandler="org.apache.ibatis.type.EnumOrdinalTypeHandler" />
+        <result property="createTime" column="create_time" />
+        <result property="updateTime" column="update_time" />
+        <association property="product" javaType="Product">
+            <id property="id" column="product_id" />
+            <result property="title" column="title" />
+            <result property="toPrice" column="product_price" />
+            <result property="mainPicture" column="main_picture" />
+        </association>
+        <association property="address" javaType="Address">
+            <id property="id" column="address_id" />
+            <result property="province" column="province" />
+            <result property="city" column="city" />
+            <result property="area" column="area" />
+            <result property="detail" column="detail" />
+            <result property="area" column="postal_code" />
+            <result property="name" column="name" />
+            <result property="phone" column="phone" />
+        </association>
+        <association property="user" javaType="User">
+            <id property="id" column="user_id" />
+            <result property="username" column="username" />
+            <result property="nickname" column="nickname" />
+        </association>
+    </resultMap>
+
+    <select id="findAllByUserId" resultMap="orderMapper">
+        select o.id,o.code,o.price,o.quantity,o.state,o.create_time,o.update_time,
+               o.product_id,p.title product_tile,p.to_price product_price, p.main_picture,
+               o.address_id,a.province,a.city,a.area,a.detail,a.postal_code,a.name,a.phone,
+               o.user_id, u.username,u.nickname
+        from orders o
+        join product p on o.product_id = p.id
+        join address a on o.address_id = a.id
+        join user u on o.user_id = u.id
+        where u.id = #{userId} and o.deleted = 0
+    </select>
+
+    <select id="findAllByUserIdAndState" resultMap="orderMapper">
+        select o.id,o.code,o.price,o.quantity,o.state,o.create_time,o.update_time,
+               o.product_id,p.title product_tile,p.to_price product_price, p.main_picture,
+               o.address_id,a.province,a.city,a.area,a.detail,a.postal_code,a.name,a.phone,
+               o.user_id, u.username,u.nickname
+        from orders o
+                 join product p on o.product_id = p.id
+                 join address a on o.address_id = a.id
+                 join user u on o.user_id = u.id
+        where u.id = #{userId} and o.state = #{state} and o.deleted = 0
+    </select>
+
+    <select id="findAllByState" resultMap="orderMapper">
+        select o.id,o.code,o.price,o.quantity,o.state,o.create_time,o.update_time,
+               o.product_id,p.title product_tile,p.to_price product_price, p.main_picture,
+               o.address_id,a.province,a.city,a.area,a.detail,a.postal_code,a.name,a.phone,
+               o.user_id, u.username,u.nickname
+        from orders o
+                 join product p on o.product_id = p.id
+                 join address a on o.address_id = a.id
+                 join user u on o.user_id = u.id
+        where o.state = #{state} and o.deleted = 0
+    </select>
+
+    <select id="findSplitByUserId" resultMap="orderMapper">
+        select o.id,o.code,o.price,o.quantity,o.state,o.create_time,o.update_time,
+               o.product_id,p.title product_tile,p.to_price product_price, p.main_picture,
+               o.address_id,a.province,a.city,a.area,a.detail,a.postal_code,a.name,a.phone,
+               o.user_id, u.username,u.nickname
+        from orders o
+                 join product p on o.product_id = p.id
+                 join address a on o.address_id = a.id
+                 join user u on o.user_id = u.id
+        where u.id = #{userId} and o.deleted = 0
+        limit #{current}, #{size}
+    </select>
+
+    <select id="findSplitByUserIdAndState" resultMap="orderMapper">
+        select o.id,o.code,o.price,o.quantity,o.state,o.create_time,o.update_time,
+               o.product_id,p.title product_tile,p.to_price product_price, p.main_picture,
+               o.address_id,a.province,a.city,a.area,a.detail,a.postal_code,a.name,a.phone,
+               o.user_id, u.username,u.nickname
+        from orders o
+                 join product p on o.product_id = p.id
+                 join address a on o.address_id = a.id
+                 join user u on o.user_id = u.id
+        where u.id = #{userId} and state = #{state} and o.deleted = 0
+        limit #{current}, #{size}
+    </select>
+
+    <select id="findSplitByState" resultMap="orderMapper">
+        select o.id,o.code,o.price,o.quantity,o.state,o.create_time,o.update_time,
+               o.product_id,p.title product_tile,p.to_price product_price, p.main_picture,
+               o.address_id,a.province,a.city,a.area,a.detail,a.postal_code,a.name,a.phone,
+               o.user_id, u.username,u.nickname
+        from orders o
+                 join product p on o.product_id = p.id
+                 join address a on o.address_id = a.id
+                 join user u on o.user_id = u.id
+        where state = #{state} and o.deleted = 0
+        limit #{current}, #{size}
+    </select>
+
+    <select id="getCountByUserId" resultType="_long">
+        select count(*) from orders where user_id = #{userId} and deleted = 0
+    </select>
+
+    <select id="getCountByUserIdAndState" resultType="_long">
+        select count(*) from orders where user_id = #{userId} and state = #{state} and deleted = 0
+    </select>
+
+    <select id="getCountByState" resultType="_long">
+        select count(*) from orders where state = #{state} and deleted = 0
+    </select>
+
+    <update id="doEditState">
+        update orders set update_time = now(), state = #{newState}
+        where id = #{orderId} and user_id = #{userId} and state = #{oldState} and deleted = 0
+    </update>
+
+</mapper>

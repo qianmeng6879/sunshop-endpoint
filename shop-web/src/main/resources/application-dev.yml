@@ -1,0 +1,24 @@
+spring:
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+      url: jdbc:mysql://localhost:3306/sunshop
+      username: root
+      password: mysqladmin
+      driver-class-name: com.mysql.cj.jdbc.Driver
+  redis:
+    host: localhost
+    port: 6379
+
+mxzero:
+  config:
+    jwt:
+      expire: 604800
+      issuer: mxzero
+      secret: mxzero-dev
+      site: https://www.mxzero.top
+
+file:
+  path:
+    prefix: D:\\Pictures\\image-upload
+
+
